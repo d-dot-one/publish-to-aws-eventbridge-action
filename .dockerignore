@@ -1,0 +1,7 @@
+# ignore all of it
+**
+
+# include these things
+!Pipfile
+!Pipfile.lock
+!action/*

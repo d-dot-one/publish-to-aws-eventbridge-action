@@ -1,0 +1,28 @@
+name: "Publish to an AWS Eventbridge Endpoint"
+description: "Publish a message to an AWS Eventbridge endpoint"
+
+inputs:
+  AWS_ACCESS_KEY_ID:
+    description: "The access key ID for the AWS IAM user (16-128 characters)"
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    description: "The secret access key for the AWS IAM user (40 characters)"
+    required: true
+  AWS_REGION:
+    description: "The AWS region where the SQS queue exists"
+    required: true
+    default: "us-east-1"
+  MESSAGE:
+    description: "The message you would like to publish to Eventbridge"
+    required: true
+  AWS_EVENTBRIDGE_ENDPOINT_NAME_OR_ARN:
+    description: "The name or ARN of an Eventbridge endpoint to publish to"
+    required: true
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+
+branding:
+  icon: 'check-circle'
+  color: 'orange'

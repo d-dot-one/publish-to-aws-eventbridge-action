@@ -1,0 +1,17 @@
+name: docker-build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout the code
+      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c  # v3
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag publish-to-sqs:$(date +%s)

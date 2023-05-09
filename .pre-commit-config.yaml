@@ -1,0 +1,140 @@
+default_stages: [commit]
+fail_fast: false
+minimum_pre_commit_version: 2.15.0
+
+repos:
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v4.0.1
+      hooks:
+      - id: check-added-large-files
+        args:
+        - --maxkb=1500
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-executables-have-shebangs
+      - id: check-json
+        exclude: manual-artifacts/tailscale/
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-symlinks
+      - id: check-yaml
+        exclude: template.yaml
+      - id: debug-statements
+      - id: destroyed-symlinks
+      - id: detect-aws-credentials
+        args:
+        - --allow-missing-credentials
+      - id: detect-private-key
+      - id: double-quote-string-fixer
+      - id: end-of-file-fixer
+      - id: name-tests-test
+        args:
+        - --django
+      - id: requirements-txt-fixer
+      - id: trailing-whitespace
+
+    - repo: https://github.com/pre-commit/mirrors-isort
+      rev: v5.4.2
+      hooks:
+        -  id: isort
+
+    - repo: https://github.com/PyCQA/pylint
+      rev: v2.13.4
+      hooks:
+       - id: pylint
+         name: pylint
+         entry: pylint
+         exclude: ^tests
+         language: system
+         types: [file, python]
+         require_serial: true
+         args:
+          # general config
+         - --ignore=CVS
+         - --ignore=tests
+         - --persistent=no
+         - --load-plugins=pylint_quotes
+         - --extension-pkg-whitelist=lxml
+         # disables
+         - --disable=broad-except
+         - --disable=broad-exception-raised
+         - --disable=consider-iterating-dictionary
+         - --disable=logging-fstring-interpolation
+         - --disable=logging-format-interpolation
+         - --disable=missing-module-docstring
+         - --disable=too-few-public-methods
+         - --disable=unused-variable
+         - --disable=invalid-name
+         # reports
+         - --output-format=text
+         - --reports=no
+         - --evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
+         # variables
+         - --init-import=yes
+         - --dummy-variables-rgx=dummy|unused
+         - --additional-builtins=_
+         # classes
+         - --defining-attr-methods=__init__,__new__,setUp
+         - --valid-classmethod-first-arg=cls
+         # naming
+         - --module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+         - --const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
+         - --class-rgx=[A-Z_][a-zA-Z0-9]+$
+         - --function-rgx=[a-z_][a-zA-Z0-9_]{2,45}$
+         - --method-rgx=[a-zA-Z_][a-zA-Z0-9_]{2,50}$
+         - --attr-rgx=[a-z_][a-zA-Z0-9_]{2,30}$
+         - --argument-rgx=[a-z_][a-zA-Z0-9_]{2,30}
+         - --variable-rgx=[a-z_][a-zA-Z0-9_]{2,30}$|[a-z]
+         - --inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
+         - --good-names=i,j,_,x,y,z,N,E,S,W,id,logger
+         - --bad-names=foo,bar,baz,toto,tutu,tata,zzyzx
+         - --no-docstring-rgx=__.*__
+         # notes
+         - --notes=FIXME,fixme,TODO,todo,FIX,fix,\\todo,@todo
+         # typecheck
+         - --ignore-mixin-members=yes
+         # formatting
+         - --max-line-length=120
+         - --max-module-lines=1200
+         - --indent-string='    '
+#         - --string-quote=single
+#         - --triple-quote=single
+#         - --docstring-quote=double
+         # similarities
+         - --min-similarity-lines=7
+         - --ignore-comments=yes
+         - --ignore-docstrings=yes
+          # design
+         - --max-args=10
+         - --ignored-argument-names=_.*|event
+         - --max-locals=20
+         - --max-returns=6
+         - --max-branches=20
+         - --max-statements=50
+         - --max-parents=7
+         - --max-attributes=15
+         - --min-public-methods=2
+         - --max-public-methods=30
+         # imports
+         - --known-standard-library=yes
+         - --known-third-party=yes
+         - --analyse-fallback-blocks=yes
+
+    - repo: https://github.com/antonbabenko/pre-commit-terraform
+      rev: v1.55.0
+      hooks:
+#        - id: terraform_fmt
+#          args:
+#            - --args=-recursive
+#            - --args=-diff
+#        - id: terraform_validate
+#        - id: terraform_docs
+#          args:
+#          - --hook-config=--path-to-file=SPECS.md
+#          - --hook-config=--add-to-existing-file=true
+#          - --hook-config=--create-file-if-not-exist=true
+        - id: terraform_tflint
+          args:
+            - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
